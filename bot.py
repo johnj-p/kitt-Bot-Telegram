@@ -30,7 +30,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🏎️ KITT Radar online"
+        "🏎️ KITT está en línea"
     )
 
 
@@ -40,7 +40,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("ping", ping))
 
-    print("🏎️ KITT Radar iniciado...")
+    print("🏎️ KITT iniciado...")
 
     app.run_polling()
 
