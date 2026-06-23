@@ -22,7 +22,7 @@ if not TOKEN:
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🏎️ KITT iniciado.\n\n"
+        "🚘 KITT iniciado.\n\n"
         "Comandos disponibles:\n"
         "/start\n"
         "/ping\n"
@@ -32,7 +32,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🏎️ KITT está en línea"
+        "🚘 KITT está en línea"
     )
 
 
@@ -84,7 +84,7 @@ def main():
     app.add_handler(CommandHandler("bitcoin", bitcoin))
     app.add_error_handler(error_handler)
 
-    print("🏎️ KITT iniciado...")
+    print("🚘 KITT iniciado...")
 
     app.run_polling()
 
