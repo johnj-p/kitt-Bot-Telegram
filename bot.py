@@ -1,4 +1,5 @@
 import os
+import time
 
 import httpx
 from dotenv import load_dotenv
@@ -8,6 +9,9 @@ from telegram.ext import (
     CommandHandler,
     ContextTypes,
 )
+
+_cache = {"price": None, "timestamp": 0}
+CACHE_TTL = 60
 
 # Cargar variables de entorno
 load_dotenv()
@@ -37,13 +41,28 @@ async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def bitcoin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    now = time.time()
+    if _cache["price"] is not None and now - _cache["timestamp"] < CACHE_TTL:
+        price = _cache["price"]
+        await update.message.reply_text(f"₿ Bitcoin: ${price:,} USD")
+        return
+
     url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
     try:
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.get(url)
+
+            if resp.status_code == 429:
+                await update.message.reply_text(
+                    "⚠️ Demasiadas consultas. Espera unos segundos y vuelve a intentar."
+                )
+                return
+
             resp.raise_for_status()
             data = resp.json()
             price = data["bitcoin"]["usd"]
+            _cache["price"] = price
+            _cache["timestamp"] = now
         await update.message.reply_text(f"₿ Bitcoin: ${price:,} USD")
     except httpx.TimeoutException:
         await update.message.reply_text(
